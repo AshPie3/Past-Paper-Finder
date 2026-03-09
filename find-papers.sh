@@ -8,15 +8,15 @@ while getopts "d:s:n:p:l:y:b:hc" flag
 do
     case "${flag}" in
         h) echo "Find subject papers on IB DOCS repo! 
-                -d: input directory (defaults to current) 
-                -s*: Subject - 2 letter abriviation or full name
-                -p*: paper - 1, 2 or 3
-                -l*: level - HL or SL
-                -n: number of papers to open (defaults to all)
-                -y: specify exam year (defaults to all)
-                -b: specify program used to open pdf files (defaults to brave)
-                -c: no argument (copies the found files into a new directory)
-                *required arguments"
+    -d: input directory (defaults to current) 
+    -s*: Subject - 2 letter abriviation or full name
+    -p*: paper - 1, 2 or 3
+    -l*: level - HL or SL
+    -n: number of papers to open (defaults to all)
+    -y: specify exam year (defaults to all)
+    -b: specify program used to open pdf files (defaults to brave)
+    -c: no argument (copies the found files into a new directory)
+        *required arguments"
                 exit 1;;
         d) dir=${OPTARG};;
         s) case ${OPTARG^^} in
@@ -56,6 +56,23 @@ else
     readarray -d '' arr < <( find "$dir" -path "*${year}*" -iname "${find_var}.pdf" -print0 -or -path "*${year}*" -iname "${find_var}*markscheme.pdf" -print0 )
     folder_name="${subject}_${paper}_${level}_${year}"
 fi
+new_arr=()
+for (( i = 0; i < ${#arr[@]} ; i++ ))
+do
+    current_item=${arr[$i]}
+    rep=0
+    for (( j = $i; j < ${arr[@]} ; j++ ))
+    do
+        if [ $( cmp "${current_item}" "${arr[$j]}" ) == "" ]; then
+            rep=1
+            break
+        fi
+    done 
+    if [ $rep != 1 ]; then
+        new_arr+=$current_item
+    fi
+done
+echo "${#new_arr[@]}"
 if [ $num == -1 ]; then 
     num=${#arr[@]}
 fi
