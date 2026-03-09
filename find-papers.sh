@@ -61,7 +61,7 @@ for (( i = 0; i < ${#arr[@]} ; i++ ))
 do
     current_item=${arr[$i]}
     rep=0
-    for (( j = $i; j < ${arr[@]} ; j++ ))
+    for (( j = 0; j < $i ; j++ ))
     do
         if [ $( cmp "${current_item}" "${arr[$j]}" ) == "" ]; then
             rep=1
