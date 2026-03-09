@@ -50,42 +50,42 @@ do
 done
 find_var="${subject}*${paper}*${level}"
 if [ ${year} == 0 ]; then
-    readarray -d '' arr < <( find "$dir" -iname "${find_var}.pdf" -print0 -or -iname "${find_var}*markscheme.pdf" -print0 )
+    readarray -d '' o_arr < <( find "$dir" -iname "${find_var}.pdf" -print0 -or -iname "${find_var}*markscheme.pdf" -print0 )
     folder_name="${subject}_${paper}_${level}"
 else
-    readarray -d '' arr < <( find "$dir" -path "*${year}*" -iname "${find_var}.pdf" -print0 -or -path "*${year}*" -iname "${find_var}*markscheme.pdf" -print0 )
+    readarray -d '' o_arr < <( find "$dir" -path "*${year}*" -iname "${find_var}.pdf" -print0 -or -path "*${year}*" -iname "${find_var}*markscheme.pdf" -print0 )
     folder_name="${subject}_${paper}_${level}_${year}"
 fi
-new_arr=()
-for (( i = 0; i < ${#arr[@]} ; i++ ))
+arr=()
+for (( i = 0; i < ${#o_arr[@]} ; i++ ))
 do
-    current_item=${arr[$i]}
+    current_item=${o_arr[$i]}
     rep=0
     for (( j = 0; j < $i ; j++ ))
     do
-        if [ $( cmp "${current_item}" "${arr[$j]}" ) == "" ]; then
+        if [ "$( cmp "${current_item}" "${o_arr[$j]}" )" == "" ]; then
             rep=1
             break
         fi
     done 
     if [ $rep != 1 ]; then
-        new_arr+=$current_item
+        arr+=("$current_item")
     fi
 done
-echo "New arr: ${#new_arr[@]}"
-echo "Old arr: ${#arr[@]}"
+echo "New arr: ${#arr[@]}"
+echo "Old arr: ${#o_arr[@]}"
 if [ $num == -1 ]; then 
     num=${#arr[@]}
 fi
 if [ $to_folder == 1 ]; then
     mkdir "${folder_name}"
 else 
-    $browser & disown
+    $browser & 
 fi 
 for (( i = 0; i < $num ; i++))
 do 
     if [ $to_folder == 1 ]; then
-        cp "${arr[$i]}" "${folder_name}/${i}_"
+        cp "${arr[$i]}" "${folder_name}/Paper-${i}.pdf"
     else
         $browser "${arr[$i]}"
     fi
