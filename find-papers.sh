@@ -8,7 +8,7 @@ while getopts "d:s:n:p:l:y:b:hc" flag
 do
     case "${flag}" in
         h) echo "Find subject papers on IB DOCS repo! 
-    -d: input directory (defaults to current) 
+    -d: search directory (defaults to current) 
     -s*: Subject - 2 letter abriviation or full name
     -p*: paper - 1, 2 or 3
     -l*: level - HL or SL
@@ -72,7 +72,8 @@ do
         new_arr+=$current_item
     fi
 done
-echo "${#new_arr[@]}"
+echo "New arr: ${#new_arr[@]}"
+echo "Old arr: ${#arr[@]}"
 if [ $num == -1 ]; then 
     num=${#arr[@]}
 fi
@@ -84,8 +85,7 @@ fi
 for (( i = 0; i < $num ; i++))
 do 
     if [ $to_folder == 1 ]; then
-        cp "${arr[$i]}" "${folder_name}"
-        mv "${folder_name}/${arr[$i]}" "${arr[$i]}_${i}"
+        cp "${arr[$i]}" "${folder_name}/${i}_"
     else
         $browser "${arr[$i]}"
     fi
