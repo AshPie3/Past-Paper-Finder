@@ -85,7 +85,8 @@ fi
 for (( i = 0; i < $num ; i++))
 do 
     if [ $to_folder == 1 ]; then
-        cp "${arr[$i]}" "${folder_name}/Paper-${i}.pdf"
+        name="$( echo "${arr[$i]}" | rev | cut -d "/" -f 1 | rev )"
+        cp "${arr[$i]}" "${folder_name}/${name}-${i}.pdf"
     else
         $browser "${arr[$i]}"
     fi
